@@ -1,8 +1,11 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 app.use(express.json());
+
+const SECRET = "beauty-secret";
 
 // ------------------ Salon Data ------------------
 
@@ -30,44 +33,137 @@ const stylists = [
     id: 1,
     name: "Priya Sharma",
     specialization: "Bridal Makeup",
-    experience: 5
+    experience: 5,
+    rating: 4.8
   },
   {
     id: 2,
     name: "Riya Das",
     specialization: "Hair Styling",
-    experience: 3
+    experience: 3,
+    rating: 4.7
   },
   {
     id: 3,
     name: "Anjali Singh",
     specialization: "Bridal Makeup",
-    experience: 7
+    experience: 7,
+    rating: 4.9
   }
 ];
 
-// ------------------ Booking Data ------------------
+// ------------------ Storage ------------------
 
 let bookings = [];
+let beautyPassports = [];
+let users = [];
 
-// ------------------ Routes ------------------
+// ------------------ Home ------------------
 
-// Home Route
 app.get("/", (req, res) => {
   res.send("Beauty Marketplace Backend Running");
 });
 
-// Get All Salons
-app.get("/salons", (req, res) => {
-  res.json(salons);
+// ------------------ Authentication ------------------
+
+// Register
+app.post("/auth/register", (req, res) => {
+  const { name, email, password } = req.body;
+
+  const existingUser = users.find(
+    user => user.email === email
+  );
+
+  if (existingUser) {
+    return res.status(400).json({
+      message: "User already exists"
+    });
+  }
+
+  const user = {
+    id: users.length + 1,
+    name,
+    email,
+    password
+  };
+
+  users.push(user);
+
+  res.json({
+    message: "User registered successfully",
+    user
+  });
 });
 
-// Get All Stylists
+// Login
+app.post("/auth/login", (req, res) => {
+  const { email, password } = req.body;
+
+  const user = users.find(
+    u => u.email === email && u.password === password
+  );
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Invalid credentials"
+    });
+  }
+
+  const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email
+    },
+    SECRET,
+    { expiresIn: "1d" }
+  );
+
+  res.json({
+    message: "Login successful",
+    token
+  });
+});
+
+// ------------------ Salon APIs ------------------
+
+app.get("/salons", (req, res) => {
+  const { location } = req.query;
+
+  let result = salons;
+
+  if (location) {
+    result = salons.filter(
+      salon =>
+        salon.location.toLowerCase() ===
+        location.toLowerCase()
+    );
+  }
+
+  res.json(result);
+});
+
+// ------------------ Stylist APIs ------------------
+
 app.get("/stylists", (req, res) => {
   res.json(stylists);
 });
 
-// Specialist Matching
+app.get("/stylists/:id", (req, res) => {
+  const stylist = stylists.find(
+    s => s.id === Number(req.params.id)
+  );
+
+  if (!stylist) {
+    return res.status(404).json({
+      message: "Stylist not found"
+    });
+  }
+
+  res.json(stylist);
+});
+
+// ------------------ Specialist Matching ------------------
+
 app.get("/match/:service", (req, res) => {
   const service = req.params.service;
 
@@ -80,7 +176,8 @@ app.get("/match/:service", (req, res) => {
   res.json(matches);
 });
 
-// Create Booking
+// ------------------ Booking APIs ------------------
+
 app.post("/book", (req, res) => {
   const { user, stylistId, date, time } = req.body;
 
@@ -100,12 +197,12 @@ app.post("/book", (req, res) => {
   });
 });
 
-// View All Bookings
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// Mock AI Recommendation Endpoint
+// ------------------ AI Recommendations ------------------
+
 app.get("/recommendations", (req, res) => {
   res.json({
     faceShape: "Oval",
@@ -119,8 +216,7 @@ app.get("/recommendations", (req, res) => {
   });
 });
 
-// Beauty Passport
-const beautyPassports = [];
+// ------------------ Beauty Passport APIs ------------------
 
 app.post("/passport", (req, res) => {
   beautyPassports.push(req.body);
