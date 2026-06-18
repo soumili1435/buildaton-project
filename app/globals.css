@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+
+body{
+
+background:#0F172A;
+color:white;
+font-family:Inter;
+
+}
+
+
+.nav{
+
+height:70px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 40px;
+
+background:#111827;
+
+}
+
+
+.nav span{
+
+margin:15px;
+color:#94A3B8;
+
+}
+
+
+.logo{
+
+font-size:25px;
+
+background:linear-gradient(
+90deg,#FF4D8D,#8B5CF6
+);
+
+-webkit-background-clip:text;
+color:transparent;
+
+}
+
+
+button{
+
+background:linear-gradient(
+90deg,#FF4D8D,#8B5CF6
+);
+
+border:none;
+color:white;
+
+padding:12px 25px;
+
+border-radius:25px;
+
+cursor:pointer;
+
+}
+
+
+
+.hero{
+
+height:90vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+background:
+radial-gradient(
+circle,
+#FF4D8D44,
+transparent
+);
+
+}
+
+
+.hero h1{
+
+font-size:70px;
+font-weight:900;
+
+}
+
+
+.hero span{
+
+background:
+linear-gradient(
+90deg,#FF4D8D,#8B5CF6
+);
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+}
+
+
+.hero input{
+
+margin:30px;
+
+padding:15px;
+
+width:400px;
+
+border-radius:20px;
+
+border:none;
+
+}
+
+section{
+  padding:80px 40px;
+}
+
+h2{
+  font-size:42px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#1E293B;
+  border-radius:20px;
+  padding:20px;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.gradientText{
+  background:linear-gradient(
+    90deg,
+    #FF4D8D,
+    #8B5CF6
+  );
+
+  -webkit-background-clip:text;
+  color:transparent;
+}
